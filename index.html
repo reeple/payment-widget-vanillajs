@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Reeple Connect Test</title>
+    <style>
+      .finver-connect {
+        padding: 1rem;
+        padding-top: 0rem;
+      }
+      #launch-btn {
+        padding: 0.8rem 1.3rem;
+        background-color: rgb(64, 61, 223);
+        color: #fff;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="finver-connect">
+      <p style="font-size: 1.4rem; font-weight: 500">Reeple Connect</p>
+      <button id="launch-btn">Link Account</button>
+    </div>
+    <script
+      type="text/javascript"
+      src="https://cdn.finver.io/connect.js"
+    ></script>
+    <script type="application/javascript">
+      var config = {
+        key: "YOUR_PUBLIC_KEY",
+        onSuccess: async function (data) {
+          // For security reasons, you should proxy the request to your server and send the secret key from there.
+          const res = await fetch(
+            "https://api.finver.io/api/v1/finrisk/connect",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "finver-secret": "YOUR_SECRET_KEY",
+              },
+              body: JSON.stringify(data),
+            }
+          );
+          const response = await res.json();
+
+          console.log(response);
+          alert(response.message);
+
+          /** data : { "code": "code_xxx" } */
+        },
+        onClose: function () {
+          console.log("Reeple Connect closed");
+        },
+      };
+
+      var launch = document.getElementById("launch-btn");
+
+      launch.onclick = function (e) {
+        const connect = FinverConnectInstance(config);
+        connect.setup();
+        connect.open();
+      };
+    </script>
+  </body>
+</html>
